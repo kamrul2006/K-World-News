@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 
 
 const MainNews = () => {
@@ -26,7 +26,7 @@ const MainNews = () => {
                                 >
                                     {/* Thumbnail */}
                                     <img
-                                        src={article.thumbnail_url}
+                                        src={article.image_url}
                                         alt={article.title}
                                         className="w-full h-48 object-cover"
                                     />
@@ -34,7 +34,8 @@ const MainNews = () => {
                                     {/* Content */}
                                     <div className="p-6">
                                         <h3 className="text-lg font-semibold text-gray-800">{article.title}</h3>
-                                        <p className="text-sm text-gray-600 mt-2">{article.details.slice(0, 100)}...</p>
+                                        <p className="text-sm text-gray-600 mt-2">{article.details.slice(0, 100)}...
+                                            <Link to={`/news/${article._id}`} className="text-blue-500 hover:underline hover:font-semibold">Read more...</Link></p>
 
                                         {/* Author */}
                                         <div className="flex items-center mt-4">

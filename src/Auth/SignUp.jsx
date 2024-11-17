@@ -1,82 +1,70 @@
-import { Link } from "react-router-dom";
-// import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
-// import auth from "../firtebase.init";
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import { AuthContext } from "../Providers/AuthProvider";
+import { Auth } from "../Firebase/Firebase.config";
+import { sendEmailVerification } from "firebase/auth";
 
 const SignUpSection = () => {
+    const navigate = useNavigate()
+    //--------------------------Context use--------------------------
+    const { CreateUserByMailPass, setUser, updatedProfile } = useContext(AuthContext)
 
-    // const [error, setError] = useState(null)
-    // const [success, setSuccess] = useState(null)
+    const [error, setError] = useState(null)
+    const [success, setSuccess] = useState(null)
     const [show, setShow] = useState(false)
 
     const HandleSignUp = (e) => {
         e.preventDefault();
         // -------------------clearing error +success msg
-        // setError(null)
-        // setSuccess(null)
+        setError(null)
+        setSuccess(null)
 
-        // const UserName = e.target.username.value
-        // const Email = e.target.email.value
-        // const Password = e.target.password.value
-        // const Name = e.target.name.value
-        // const Photo = e.target.photoUrl.value
-        // const Terms = e.target.terms.checked
-        // console.log('UserName:-', UserName)
+        const Email = e.target.email.value
+        const Password = e.target.password.value
+        const Name = e.target.name.value
+        const Photo = e.target.photoUrl.value
+        const Terms = e.target.terms.checked
+        // console.log('Name:-', Name)
         // console.log('Email:-', Email)
         // console.log('Password:-', Password)
         // console.log('Terms:-', (Terms))
-        // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
-        // if (!Terms) {
-        //     setError('Pleas accept all terms and conditions.')
-        //     return
-        // }
-        // else if (Password.length < 6) {
-        //     setError('Password should must be 6 character or more !!')
-        //     return
-        // }
-        // else if (!passwordRegex.test(Password)) {
-        //     setError('Password should contain a-z, A-Z, 0-9 and a special character.')
-        //     return
-        // }
+        if (!Terms) {
+            setError('Pleas accept all terms and conditions.')
+            return
+        }
+        else if (Password.length < 6) {
+            setError('Password should must be 6 character or more !!')
+            return
+        }
+        else if (!passwordRegex.test(Password)) {
+            setError('Password should contain a-z, A-Z, 0-9 and a special character.')
+            return
+        }
 
 
-        // createUserWithEmailAndPassword(auth, Email, Password)
-        //     .then((userCredential) => {
-        //         // ----------------------------Signed up 
-        //         const user = userCredential.user;
-        //         console.log(user)
-        //         // setSuccess('Sign Up Successful.')
+        CreateUserByMailPass(Email, Password)
+            .then((userCredential) => {
+                //         // ----------------------------Signed up 
+                const user = userCredential.user;
+                setUser(user)
+                setSuccess('Sign Up Successful.')
 
-        //         sendEmailVerification(auth.currentUser)
-        //             .then(() => {
-        //                 console.log('Email verification sent!')
-        //                 // ...
-        //             });
+                updatedProfile({ displayName: Name, photoURL: Photo })
+                    .then(() => {
+                        navigate('/')
+                    }).catch(err => setError(err.massage))
 
-        //         updateProfile(auth.currentUser, {
-        //             displayName: Name, photoURL: Photo
-        //         }).then(() => {
-        //             console.log("  Profile updated!")
 
-        //         })
-        //     })
-        //     .catch((error) => {
-        //         const errorCode = error.code;
-        //         const errorMessage = error.message;
-        //         console.log(errorCode, errorMessage
-        //         )
-        //         // setError(errorMessage)
-        //     })
+                sendEmailVerification(Auth.currentUser)
+                    .then(() => {
+                        //                 console.log('Email verification sent!')
+                    })
+            });
 
-        // updateProfile(auth.currentUser, {
-        //     displayName: Name, photoURL: Photo
-        // }).then(() => {
-        //     // Profile updated!
-        //     // ...
-        // })
 
     }
 
@@ -94,7 +82,6 @@ const SignUpSection = () => {
                 <p className="text-center text-black mb-8">Join us and enjoy exclusive benefits!</p>
 
                 <form onSubmit={HandleSignUp} className="space-y-6">
-
 
                     <div className="relative">
                         <input
@@ -174,8 +161,8 @@ const SignUpSection = () => {
                         </label>
                     </div>
 
-                    {/* {error && <p className="text-xs font-semibold text-red-500 text-center">{error}</p>}
-                    {success && <p className="text-xs font-semibold text-green-500 text-center">{success}</p>} */}
+                    {error && <p className="text-xs font-semibold text-red-500 text-center">{error}</p>}
+                    {success && <p className="text-xs font-semibold text-green-500 text-center">{success}</p>}
 
                     <button type="submit" className="w-full btn btn-info text-black py-2 rounded-lg font-semibold">
                         Sign Up

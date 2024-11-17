@@ -1,20 +1,45 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../Providers/AuthProvider";
 
 
 
 const LoginPage = () => {
+
+  const location = useLocation()
+  // console.info(location)
+
+
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate()
 
+  //---------- Context use----------------------
 
+  const { LoginUser, setUser } = useContext(AuthContext)
+
+  const HandleLogin = (e) => {
+    e.preventDefault();
+    LoginUser(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        setUser(user)
+        navigate(location.state ? location.state : '/')
+      })
+      .catch((error) => {
+        // console.log(error)
+        alert(error.massage + ' ' + 'Password or Email is wrong...')
+      });
+
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center ">
       <div className="p-8 rounded-lg  max-w-md w-full">
         <h2 className="text-3xl font-bold text-center text-indigo-700 mb-6">Welcome Back</h2>
 
-        <form className="space-y-6">
+        <form onSubmit={HandleLogin} className="space-y-6">
           {/* Email Field */}
           <div className="">
             <input

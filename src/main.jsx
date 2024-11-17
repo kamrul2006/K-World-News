@@ -1,17 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider, } from "react-router-dom";
 import HomeLayOuts from './Layouts/HomeLayOuts';
 import Error from './Components/error';
 import MainNews from './Home/MainNews';
 import AuthLayout from './Layouts/AuthLayout';
 import LoginPage from './Auth/Login';
 import SignUpSection from './Auth/SignUp';
+import AuthProvider from './Providers/AuthProvider';
+import NewsDetailsLayOut from './Layouts/NewsDetails';
+import PrivetRout from './Firebase/Privetrought';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +28,12 @@ const router = createBrowserRouter([
         element: <MainNews></MainNews>
       }
     ]
+  },
+
+  {
+    path: "/news/:id",
+    loader: ({ params }) => fetch(`https://openapi.programming-hero.com/api/news/${params.id}`),
+    element: <PrivetRout><NewsDetailsLayOut></NewsDetailsLayOut></PrivetRout>
   },
 
   {
@@ -52,6 +57,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 )

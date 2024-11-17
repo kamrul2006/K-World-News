@@ -4,7 +4,7 @@ import Navbar from "../Components/Navbar";
 
 const AuthLayout = () => {
     return (
-        <div>
+        <div className="font-Pop">
             <div className="my-5">
                 <Navbar></Navbar>
             </div>
